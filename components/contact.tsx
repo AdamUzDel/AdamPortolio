@@ -133,7 +133,7 @@ export function Contact() {
 
                 <div className="pt-4">
                   <p className="text-muted-foreground">
-                    Based in Nairobi, Kenya. Available for remote work and collaborations worldwide.
+                    Based in Kampala, Uganda. Available for remote work and collaborations worldwide.
                   </p>
                 </div>
               </CardContent>

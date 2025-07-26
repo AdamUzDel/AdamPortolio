@@ -36,7 +36,7 @@ export function Header() {
       <div className="container flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-cyan-500">
-            BytebaseTech
+            Adam's Portfolio
           </span>
         </Link>
 

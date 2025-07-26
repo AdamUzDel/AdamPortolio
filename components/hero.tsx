@@ -104,7 +104,7 @@ export function Hero() {
       >
         <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-r from-purple-600 to-cyan-500 p-1">
           <div className="w-full h-full rounded-full overflow-hidden bg-background flex items-center justify-center">
-            <img src="/placeholder.svg?height=256&width=256" alt="Adam" className="w-full h-full object-cover" />
+            <img src="/adam-pic.jpg?height=256&width=256" alt="Adam potrait photo" className="w-full h-full object-cover" />
           </div>
         </div>
         <div className="absolute -bottom-2 -right-2 bg-background rounded-full p-2">
