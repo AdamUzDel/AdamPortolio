@@ -36,42 +36,60 @@ export function Contact() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      })
 
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-    setFormState({ name: "", email: "", subject: "", message: "" })
+      const data = await response.json()
 
-    // Reset success message after 5 seconds
-    setTimeout(() => {
-      setIsSubmitted(false)
-    }, 5000)
+      if (response.ok) {
+        setIsSubmitted(true)
+        setFormState({ name: "", email: "", subject: "", message: "" })
+
+        // Reset success message after 5 seconds
+        setTimeout(() => {
+          setIsSubmitted(false)
+        }, 5000)
+      } else {
+        throw new Error(data.error || "Failed to send message")
+      }
+    } catch (error) {
+      console.error("Error sending message:", error)
+      // You could add error state handling here
+      alert("Failed to send message. Please try again later.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const socialLinks = [
     {
       name: "LinkedIn",
       icon: <Linkedin className="h-5 w-5" />,
-      href: "https://linkedin.com",
+      href: "https://www.linkedin.com/in/ssemakula-adam/",
       color: "hover:bg-blue-600",
     },
     {
       name: "Twitter",
       icon: <Twitter className="h-5 w-5" />,
-      href: "https://twitter.com",
+      href: "https://x.com/SsemakulaAdam",
       color: "hover:bg-sky-500",
     },
     {
       name: "GitHub",
       icon: <Github className="h-5 w-5" />,
-      href: "https://github.com",
+      href: "https://github.com/AdamUzDel",
       color: "hover:bg-gray-800",
     },
     {
       name: "WhatsApp",
       icon: <MessageSquare className="h-5 w-5" />,
-      href: "https://wa.me/1234567890",
+      href: "https://wa.me/256764286149",
       color: "hover:bg-green-600",
     },
   ]
@@ -109,7 +127,7 @@ export function Contact() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="font-medium">inquiries@bytebasetech.com</p>
+                    <p className="font-medium">adamssemakula@gmail.com</p>
                   </div>
                 </div>
 
@@ -227,7 +245,9 @@ export function Contact() {
                     {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
                   {isSubmitted && (
-                    <p className="text-green-600 text-center">Thank you! Your message has been sent successfully.</p>
+                    <p className="text-green-600 text-center">
+                      Thank you! Your message has been sent successfully. I'll get back to you soon!
+                    </p>
                   )}
                 </form>
               </CardContent>
