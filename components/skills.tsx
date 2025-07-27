@@ -25,10 +25,34 @@ export function Skills() {
       description: "React framework for production",
     },
     {
+      name: "React",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+      color: "bg-blue-400",
+      description: "JavaScript library for building user interfaces",
+    },
+    {
       name: "TypeScript",
       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
       color: "bg-blue-500",
       description: "Typed JavaScript at any scale",
+    },
+    {
+      name: "Node.js",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+      color: "bg-green-600",
+      description: "JavaScript runtime for server-side development",
+    },
+    {
+      name: "Java",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+      color: "bg-red-500",
+      description: "Object-oriented programming language",
+    },
+    {
+      name: "Laravel",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-plain.svg",
+      color: "bg-red-600",
+      description: "PHP framework for web artisans",
     },
     {
       name: "Firebase",
@@ -103,7 +127,7 @@ export function Skills() {
             variants={container}
             initial="hidden"
             animate={inView ? "show" : "hidden"}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8"
           >
             {skills.map((skill, index) => (
               <motion.div key={skill.name} variants={item}>

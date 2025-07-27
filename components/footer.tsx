@@ -17,7 +17,7 @@ export function Footer() {
             </p>
             <div className="flex space-x-3">
               <a
-                href="https://twitter.com"
+                href="https://x.com/SsemakulaAdam"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -26,7 +26,7 @@ export function Footer() {
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/ssemakula-adam/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -35,7 +35,7 @@ export function Footer() {
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/AdamUzDel"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -44,7 +44,7 @@ export function Footer() {
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="mailto:inquiries@bytebasetech.com"
+                href="mailto:adamssemakula@gmail.com.com"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Email"
               >
@@ -70,11 +70,11 @@ export function Footer() {
                   Projects
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="#products" className="text-muted-foreground hover:text-primary transition-colors">
                   Products
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="#contact" className="text-muted-foreground hover:text-primary transition-colors">
                   Contact
@@ -86,35 +86,30 @@ export function Footer() {
             <h3 className="text-lg font-medium mb-4">BytebaseTech</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://www.bytebasetech.com/about" className="text-muted-foreground hover:text-primary transition-colors">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://www.bytebasetech.com/services" className="text-muted-foreground hover:text-primary transition-colors">
                   Services
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Blog
+                <a href="https://www.bytebasetech.com/quote" className="text-muted-foreground hover:text-primary transition-colors">
+                  Request Quote
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Privacy Policy
+                <a href="https://www.bytebasetech.com/web-design-uganda" className="text-muted-foreground hover:text-primary transition-colors">
+                  Web Design in Uganda
                 </a>
               </li>
             </ul>
           </div>
         </div>
         <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-          <p>© {new Date().getFullYear()} BytebaseTech. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Adam Ssemakula. All rights reserved.</p>
         </div>
       </div>
     </footer>
