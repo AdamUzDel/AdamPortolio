@@ -1,4 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { Resend } from "resend"
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,105 +19,109 @@ export async function POST(request: NextRequest) {
     }
 
     // Create email content
-    const emailContent = {
-      to: "adamssemakula@gmail.com",
-      from: email,
-      subject: `Portfolio Contact: ${subject}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333; border-bottom: 2px solid #8b5cf6; padding-bottom: 10px;">
-            New Contact Form Submission
-          </h2>
-          
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #4f46e5; margin-top: 0;">Contact Details</h3>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <div style="background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%); padding: 30px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">New Portfolio Contact</h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Someone reached out through your website!</p>
+        </div>
+        
+        <div style="padding: 30px;">
+          <div style="background-color: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 25px; border-left: 4px solid #8b5cf6;">
+            <h2 style="color: #4f46e5; margin: 0 0 20px 0; font-size: 20px;">Contact Information</h2>
+            <div style="margin-bottom: 15px;">
+              <strong style="color: #374151;">Name:</strong>
+              <span style="color: #6b7280; margin-left: 10px;">${name}</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <strong style="color: #374151;">Email:</strong>
+              <span style="color: #6b7280; margin-left: 10px;">${email}</span>
+            </div>
+            <div>
+              <strong style="color: #374151;">Subject:</strong>
+              <span style="color: #6b7280; margin-left: 10px;">${subject}</span>
+            </div>
           </div>
           
-          <div style="background-color: #ffffff; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <h3 style="color: #4f46e5; margin-top: 0;">Message</h3>
-            <p style="line-height: 1.6; color: #374151;">${message.replace(/\n/g, "<br>")}</p>
+          <div style="background-color: #ffffff; padding: 25px; border: 2px solid #e5e7eb; border-radius: 12px; margin-bottom: 25px;">
+            <h3 style="color: #4f46e5; margin: 0 0 15px 0; font-size: 18px;">Message</h3>
+            <div style="line-height: 1.6; color: #374151; white-space: pre-wrap;">${message}</div>
           </div>
           
-          <div style="margin-top: 20px; padding: 15px; background-color: #ecfdf5; border-radius: 8px; border-left: 4px solid #10b981;">
+          <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; text-align: center;">
             <p style="margin: 0; color: #065f46; font-size: 14px;">
-              This message was sent from your portfolio website contact form.
+              📧 This message was sent from your portfolio website contact form<br>
+              🌐 <strong>BytebaseTech Portfolio</strong>
+            </p>
+          </div>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+              Reply directly to this email to respond to ${name}
             </p>
           </div>
         </div>
-      `,
-      text: `
-        New Contact Form Submission
-        
-        Name: ${name}
-        Email: ${email}
-        Subject: ${subject}
-        
-        Message:
-        ${message}
-        
-        This message was sent from your portfolio website contact form.
-      `,
+      </div>
+    `
+
+    const emailText = `
+New Portfolio Contact Form Submission
+
+Contact Information:
+Name: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+This message was sent from your BytebaseTech portfolio website.
+Reply directly to this email to respond to ${name}.
+    `
+
+    // Send email using Resend
+    const { data, error } = await resend.emails.send({
+      from: "Portfolio Contact <onboarding@resend.dev>", // Use Resend's default sending domain
+      to: ["adamssemakula@gmail.com"],
+      // replyTo: email, // This allows you to reply directly to the sender
+      subject: `Portfolio Contact: ${subject}`,
+      html: emailHtml,
+      text: emailText,
+    })
+
+    if (error) {
+      console.error("Resend error:", error)
+      return NextResponse.json({ error: "Failed to send email" }, { status: 500 })
     }
 
-    // Here you would integrate with your preferred email service
-    // For example, using SendGrid, Nodemailer, or Resend
-
-    // For demonstration, we'll use a mock email service
-    // Replace this with your actual email service implementation
-    const emailResponse = await sendEmail(emailContent)
-
-    if (emailResponse.success) {
-      return NextResponse.json({ message: "Email sent successfully!" }, { status: 200 })
-    } else {
-      throw new Error("Failed to send email")
-    }
+    console.log("Email sent successfully:", data)
+    return NextResponse.json(
+      {
+        message: "Message sent successfully! I'll get back to you soon.",
+        emailId: data?.id,
+      },
+      { status: 200 },
+    )
   } catch (error) {
     console.error("Contact form error:", error)
-    return NextResponse.json({ error: "Failed to send message. Please try again later." }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: "Failed to send message. Please try again later.",
+      },
+      { status: 500 },
+    )
   }
 }
 
-// Mock email service function - replace with your actual email service
-async function sendEmail(emailContent: any) {
-  // This is a placeholder for your email service integration
-  // You can use services like:
-  // - Resend: https://resend.com/
-  // - SendGrid: https://sendgrid.com/
-  // - Nodemailer with Gmail/SMTP
-  // - EmailJS for client-side sending
-
-  try {
-    // Example with Resend (uncomment and configure):
-    
-    const { Resend } = require('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    
-    const { data, error } = await resend.emails.send({
-      from: 'portfolio@yourdomain.com',
-      to: emailContent.to,
-      subject: emailContent.subject,
-      html: emailContent.html,
-      reply_to: emailContent.from,
-    });
-    
-    if (error) {
-      throw error;
-    }
-    
-    return { success: true, data };
-   
-
-    // For now, we'll simulate a successful email send
-    /* console.log("Email would be sent to:", emailContent.to)
-    console.log("Subject:", emailContent.subject)
-    console.log("From:", emailContent.from)
-
-    return { success: true } */
-  } catch (error) {
-    console.error("Email service error:", error)
-    return { success: false, error }
-  }
+// Add CORS headers to handle preflight requests
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  })
 }
