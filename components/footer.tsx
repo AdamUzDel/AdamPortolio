@@ -9,7 +9,7 @@ export function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-cyan-500">
-                BytebaseTech
+                Adam Ssemakula
               </span>
             </Link>
             <p className="text-muted-foreground mb-4 max-w-xs">

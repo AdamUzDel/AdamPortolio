@@ -90,25 +90,25 @@ export function Contact() {
     {
       name: "LinkedIn",
       icon: <Linkedin className="h-5 w-5" />,
-      href: "https://linkedin.com/in/adamssemakula",
+      href: "https://www.linkedin.com/in/ssemakula-adam/",
       color: "hover:bg-blue-600",
     },
     {
       name: "Twitter",
       icon: <Twitter className="h-5 w-5" />,
-      href: "https://twitter.com/adamssemakula",
+      href: "https://x.com/SsemakulaAdam",
       color: "hover:bg-sky-500",
     },
     {
       name: "GitHub",
       icon: <Github className="h-5 w-5" />,
-      href: "https://github.com/adamssemakula",
+      href: "https://github.com/AdamUzDel",
       color: "hover:bg-gray-800",
     },
     {
       name: "WhatsApp",
       icon: <MessageSquare className="h-5 w-5" />,
-      href: "https://wa.me/256700000000", // Replace with your actual WhatsApp number
+      href: "https://wa.me/256764286149",
       color: "hover:bg-green-600",
     },
   ]
@@ -170,7 +170,7 @@ export function Contact() {
 
                 <div className="pt-4">
                   <p className="text-muted-foreground">
-                    Based in Nairobi, Kenya. Available for remote work and collaborations worldwide.
+                    Based in Kampala, Uganda. Available for remote work and collaborations worldwide.
                   </p>
                 </div>
               </CardContent>

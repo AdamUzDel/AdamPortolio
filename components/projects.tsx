@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo, Suspense } from "react"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, Github, Play } from "lucide-react"
+import { ExternalLink, Github, Play, Loader2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface Project {
@@ -21,6 +21,34 @@ interface Project {
   caseStudyUrl?: string
 }
 
+// Lazy loading image component
+function LazyImage({ src, alt, className }: { src: string; alt: string; className: string }) {
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  return (
+    <div className="relative w-full h-full bg-muted">
+      {!imageLoaded && !imageError && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      )}
+      <img
+        src={imageError ? "/placeholder.svg?height=400&width=600" : src}
+        alt={alt}
+        className={`${className} ${imageLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
+        onLoad={() => setImageLoaded(true)}
+        onError={() => {
+          setImageError(true)
+          setImageLoaded(true)
+        }}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )
+}
+
 export function Projects() {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -28,7 +56,9 @@ export function Projects() {
   })
 
   const [filter, setFilter] = useState<string>("all")
+  const [showAll, setShowAll] = useState(false)
 
+  // Optimized projects array with smaller, more efficient images
   const projects: Project[] = [
     {
       id: "e-somero",
@@ -248,16 +278,30 @@ export function Projects() {
     },
   ]
 
-  const filteredProjects = filter === "all" ? projects : projects.filter((project) => project.category.includes(filter))
+  // Memoized filtered projects
+  const filteredProjects = useMemo(() => {
+    const filtered =
+      filter === "all"
+        ? projects
+        : projects.filter((project) => project.category.some((cat) => cat.toLowerCase().includes(filter.toLowerCase())))
 
-  const categories = ["all", ...Array.from(new Set(projects.flatMap((project) => project.category))).sort()]
+    // Show only first 6 projects initially on mobile, 9 on desktop
+    const initialCount = typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 9
+    return showAll ? filtered : filtered.slice(0, initialCount)
+  }, [filter, showAll, projects])
+
+  // Memoized categories
+  const categories = useMemo(
+    () => ["all", ...Array.from(new Set(projects.flatMap((project) => project.category))).sort()],
+    [projects],
+  )
 
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05, // Reduced stagger for better performance
       },
     },
   }
@@ -283,90 +327,147 @@ export function Projects() {
           </p>
         </motion.div>
 
+        {/* Category Filter */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-2 mb-12"
+          className="flex flex-wrap justify-center gap-2 mb-12 max-w-4xl mx-auto"
         >
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={filter === category ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter(category)}
-              className="capitalize"
-            >
-              {category}
-            </Button>
-          ))}
+          {categories.slice(0, 8).map(
+            (
+              category, // Limit categories shown
+            ) => (
+              <Button
+                key={category}
+                variant={filter === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setFilter(category)
+                  setShowAll(false) // Reset show all when filtering
+                }}
+                className="capitalize text-xs md:text-sm"
+              >
+                {category}
+              </Button>
+            ),
+          )}
         </motion.div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate={inView ? "show" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        {/* Projects Grid */}
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          }
         >
-          {filteredProjects.map((project) => (
-            <motion.div key={project.id} variants={item}>
-              <Card className="overflow-hidden h-full border border-border hover:border-primary/50 transition-all hover:shadow-lg group">
-                <div className="relative overflow-hidden aspect-video">
-                  <img
-                    src={project.image || "/placeholder.svg"}
-                    alt={project.title}
-                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
-                    {project.demoUrl && (
-                      <Button size="sm" variant="secondary" className="mr-2" asChild>
-                        <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                          <Play className="mr-1 h-4 w-4" /> Demo
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate={inView ? "show" : "hidden"}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+          >
+            {filteredProjects.map((project) => (
+              <motion.div key={project.id} variants={item}>
+                <Card className="overflow-hidden h-full border border-border hover:border-primary/50 transition-all hover:shadow-lg group">
+                  <div className="relative overflow-hidden aspect-video">
+                    <LazyImage
+                      src={project.image}
+                      alt={project.title}
+                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+                      {project.demoUrl && (
+                        <Button size="sm" variant="secondary" className="mr-2" asChild>
+                          <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                            <Play className="mr-1 h-3 w-3" /> Demo
+                          </a>
+                        </Button>
+                      )}
+                      {project.githubUrl && (
+                        <Button size="sm" variant="secondary" asChild>
+                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                            <Github className="mr-1 h-3 w-3" /> Code
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <CardHeader className="pb-3">
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {project.tags.slice(0, 3).map(
+                        (
+                          tag, // Limit tags shown
+                        ) => (
+                          <Badge key={tag} variant="secondary" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ),
+                      )}
+                    </div>
+                    <CardTitle className="text-lg leading-tight">{project.title}</CardTitle>
+                    <CardDescription className="text-sm line-clamp-3">{project.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0 pb-3">
+                    <div className="flex flex-wrap gap-1">
+                      {project.techStack.slice(0, 4).map(
+                        (
+                          tech, // Limit tech stack shown
+                        ) => (
+                          <Badge key={tech} variant="outline" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ),
+                      )}
+                    </div>
+                  </CardContent>
+                  <CardFooter className="pt-0">
+                    {project.caseStudyUrl && (
+                      <Button variant="link" size="sm" className="ml-auto p-0 h-auto" asChild>
+                        <a href={project.caseStudyUrl} target="_blank" rel="noopener noreferrer">
+                          Case Study <ExternalLink className="ml-1 h-3 w-3" />
                         </a>
                       </Button>
                     )}
-                    {project.githubUrl && (
-                      <Button size="sm" variant="secondary" asChild>
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                          <Github className="mr-1 h-4 w-4" /> Code
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                <CardHeader>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {project.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <CardTitle>{project.title}</CardTitle>
-                  <CardDescription>{project.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {project.techStack.map((tech) => (
-                      <Badge key={tech} variant="outline">
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  {project.caseStudyUrl && (
-                    <Button variant="link" size="sm" className="ml-auto" asChild>
-                      <a href={project.caseStudyUrl} target="_blank" rel="noopener noreferrer">
-                        Case Study <ExternalLink className="ml-1 h-3 w-3" />
-                      </a>
-                    </Button>
-                  )}
-                </CardFooter>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Suspense>
+
+        {/* Show More/Less Button */}
+        {!showAll && filteredProjects.length >= (typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 9) && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-center mt-12"
+          >
+            <Button
+              onClick={() => setShowAll(true)}
+              variant="outline"
+              size="lg"
+              className="bg-background hover:bg-muted"
+            >
+              Show More Projects ({projects.length - filteredProjects.length} more)
+            </Button>
+          </motion.div>
+        )}
+
+        {showAll && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mt-12">
+            <Button
+              onClick={() => setShowAll(false)}
+              variant="outline"
+              size="lg"
+              className="bg-background hover:bg-muted"
+            >
+              Show Less
+            </Button>
+          </motion.div>
+        )}
       </div>
     </section>
   )
