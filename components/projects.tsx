@@ -121,7 +121,7 @@ export function Projects() {
     {
       id: "path-of-yasuke",
       title: "PathOfYasuke",
-      description: "“Path of Yasuke” is a gamified self-mastery app that helps users build discipline, resilience, cultural knowledge, and personal excellence using the story, symbolism, and virtues of Yasuke.",
+      description: "'Path of Yasuke' is a gamified self-mastery app that helps users build discipline, resilience, cultural knowledge, and personal excellence using the story, symbolism, and virtues of Yasuke.",
       image: "/path-of-yasuke-bytebasetech.png?height=400&width=600",
       tags: ["Lifestyle", "Productivity"],
       category: ["Web Apps", "SaaS", "Mobile", "AI", "Productivity"],

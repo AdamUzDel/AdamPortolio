@@ -50,7 +50,7 @@ export function Skills() {
     },
     {
       name: "Laravel",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-plain.svg",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg",
       color: "bg-red-600",
       description: "PHP framework for web artisans",
     },
@@ -68,7 +68,7 @@ export function Skills() {
     },
     {
       name: "Tailwind CSS",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
       color: "bg-cyan-500",
       description: "Utility-first CSS framework",
     },
