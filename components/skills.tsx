@@ -31,6 +31,12 @@ export function Skills() {
       description: "JavaScript library for building user interfaces",
     },
     {
+      name: "Vue",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/vuejs-original.svg",
+      color: "bg-blue-450",
+      description: "The Progressive JavaScript Framework",
+    },
+    {
       name: "TypeScript",
       icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
       color: "bg-blue-500",
