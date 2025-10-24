@@ -32,7 +32,7 @@ export function Skills() {
     },
     {
       name: "Vue",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/vuejs-original.svg",
+      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
       color: "bg-blue-450",
       description: "The Progressive JavaScript Framework",
     },
